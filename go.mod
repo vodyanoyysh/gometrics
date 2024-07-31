@@ -1,4 +1,4 @@
-module gometrics
+module github.com/vodyanoyysh/gometrics
 
 go 1.22.5
 
