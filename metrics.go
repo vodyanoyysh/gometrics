@@ -33,8 +33,8 @@ type MetricParams struct {
 	TriggerCount string `yaml:"trigger_count"`
 }
 
-func (m *Metrics) loadConfig(path, filename string) {
-	data, err := os.ReadFile(filepath.Join(path, filename))
+func (m *Metrics) loadConfig(path string) {
+	data, err := os.ReadFile(filepath.Join(path))
 	if err != nil {
 		slog.Error(fmt.Sprintf("error reading the file: %v", err))
 	}
@@ -44,8 +44,8 @@ func (m *Metrics) loadConfig(path, filename string) {
 	}
 }
 
-func (m *Metrics) Init(path, filename string) {
-	m.loadConfig(path, filename)
+func (m *Metrics) Init(path string) {
+	m.loadConfig(path)
 	m.ProcessingMetric = prometheus.NewCounterVec(prometheus.CounterOpts{Name: "processing_total"},
 		[]string{"type", "process", "trigger_time", "trigger_count"},
 	)
@@ -60,12 +60,16 @@ func (m *Metrics) Init(path, filename string) {
 	prometheus.MustRegister(m.ProcessingMetric, m.ErrorMetric, m.WarningMetric)
 	m.IncMetric("processing", "new_test.testing", 10)
 
-	go func() {
-		http.Handle("/metrics", promhttp.Handler())
-		log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", m.Port), nil))
-	}()
+	// go func() {
+	// 	http.Handle("/metrics", promhttp.Handler())
+	// 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", m.Port), nil))
+	// }()
 }
 
+func GetMetricsHandler() http.Handler {
+	return promhttp.Handler()
+}
+	
 func (m *Metrics) initMetrics() {
 	for _, mp := range m.ProcessingTotal {
 		m.ProcessingMetric.WithLabelValues(mp.Type, mp.Process, mp.TriggerTime, mp.TriggerCount).Add(0)
