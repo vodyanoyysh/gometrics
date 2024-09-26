@@ -57,7 +57,6 @@ func (m *Metrics) Init(path string) {
 
 	m.initMetrics()
 	prometheus.MustRegister(m.ProcessingMetric, m.ErrorMetric, m.WarningMetric)
-	m.IncMetric("processing", "new_test.testing", 10)
 
 	// go func() {
 	// 	http.Handle("/metrics", promhttp.Handler())
