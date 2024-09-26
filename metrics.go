@@ -5,7 +5,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gopkg.in/yaml.v3"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
